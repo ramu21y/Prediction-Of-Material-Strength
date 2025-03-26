@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Strength Prediction - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(120deg, #eef2f7, #d3dce6, #b8c6db);
+            color: #2d3748;
+            line-height: 1.7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 25px 0;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            letter-spacing: -0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: #3182ce;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links li a {
+            color: #718096;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: #fff;
+            background: #2b6cb0;
+            box-shadow: 0 3px 12px rgba(43, 108, 176, 0.25);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 60px 0;
+        }
+
+        /* Card */
+        .card {
+            background: #fff;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+            max-width: 1280px;
+            margin: 0 auto;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .card-subtitle {
+            font-size: 1.15rem;
+            color: #718096;
+            margin-bottom: 40px;
+            font-weight: 400;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 10px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            color: #2d3748;
+            background: #f7fafc;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23718096'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 18px;
+        }
+
+        .form-input:focus {
+            border-color: #2b6cb0;
+            outline: none;
+            box-shadow: 0 0 10px rgba(43, 108, 176, 0.25);
+            background: #fff;
+            transform: scale(1.015);
+        }
+
+        /* Button Container */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Modern Button */
+        .modern-btn {
+            position: relative;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, #2b6cb0, #63b3ed);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 18px rgba(43, 108, 176, 0.3);
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .modern-btn:hover {
+            background: linear-gradient(135deg, #1c4d7d, #2b6cb0);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(43, 108, 176, 0.4);
+        }
+
+        .modern-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .modern-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-spinner {
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .btn-text {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            color: #718096;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header .container {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 20px;
+                padding: 25px 0;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .card {
+                padding: 30px;
+            }
+
+            .card-title {
+                font-size: 1.8rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modern-btn {
+                font-size: 1.1rem;
+                padding: 14px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">Material Strength Prediction</div>
+            <ul class="nav-links">
+                <li><a href="rambabu.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="author.html">Author</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="dashboard-section">
+            <div class="card">
+                <h2 class="card-title">Material Strength Dashboard</h2>
+                <p class="card-subtitle">Input material properties to predict strength.</p>
+                <form id="material-form" onsubmit="predictAndRedirect(); return false;">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="industry">Industry</label>
+                            <select id="industry" name="industry" class="form-input" required>
+                                <option value="">Select Industry</option>
+                                <option value="aerospace">Aerospace</option>
+                                <option value="automotive">Automotive</option>
+                                <option value="construction">Construction</option>
+                                <option value="biomedical">Biomedical</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="material">Material</label>
+                            <select id="material" name="material" class="form-input" required onchange="loadMaterialData(this.value)">
+                                <option value="">Select Material</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="su">Ultimate Strength (Su)</label>
+                            <select id="su" name="su" class="form-input" required>
+                                <option value="">Select a value</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="sy">Yield Strength (Sy)</label>
+                            <select id="sy" name="sy" class="form-input" required>
+                                <option value="">Select a value</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="e">Elastic Limit (E)</label>
+                            <select id="e" name="e" class="form-input" required>
+                                <option value="">Select a value</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="g">Modulus of Rigidity (G)</label>
+                            <select id="g" name="g" class="form-input" required>
+                                <option value="">Select a value</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="mu">Mu Coefficient (Mu)</label>
+                            <select id="mu" name="mu" class="form-input" required>
+                                <option value="">Select a value</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="ro">Ro (Density)</label>
+                            <select id="ro" name="ro" class="form-input" required>
+                                <option value="">Select a value</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="custom-parameter">Custom Parameter</label>
+                            <input type="text" id="custom-parameter" name="custom-parameter" class="form-input" placeholder="e.g., Cost">
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="modern-btn">
+                            <span class="btn-text">Predict Material Strength</span>
+                            <span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Material Strength Prediction</p>
+        </div>
+    </footer>
+
+    <script src="rambabu.js"></script>
+    <script>
+        function predictAndRedirect() {
+            const form = document.getElementById('material-form');
+            const btn = form.querySelector('.modern-btn');
+            const spinner = btn.querySelector('.btn-spinner');
+            const text = btn.querySelector('.btn-text');
+
+            // Prevent default form submission
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Show spinner and disable button
+                spinner.style.display = 'inline-block';
+                text.style.opacity = '0';
+                btn.disabled = true;
+
+                // Simulate processing and redirect
+                setTimeout(() => {
+                    spinner.style.display = 'none';
+                    text.style.opacity = '1';
+                    btn.disabled = false;
+                    window.location.href = 'report.html';
+                }, 1000); // 1-second delay for spinner effect
+            }, { once: true }); // Ensures the event listener is only triggered once per click
+        }
+    </script>
+</body>
+</html>

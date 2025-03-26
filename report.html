@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Strength Prediction Report</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #0288D1;
+            --secondary: #4FC3F7;
+            --background: #E3F2FD;
+            --text: #0D47A1;
+            --light-text: #1976D2;
+            --danger: #D81B60;
+            --success: #388E3C;
+            --warning: #FFB300;
+            --shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+            --radius: 24px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background), #B3E5FC, #81D4FA, #4FC3F7);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.4), transparent 60%);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .report-container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 900px;
+            width: 100%;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(2, 136, 209, 0.05);
+            transition: var(--transition);
+        }
+
+        .report-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .report-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 1px 1px 3px rgba(2, 136, 209, 0.2);
+        }
+
+        .report-timestamp {
+            font-size: 0.9rem;
+            color: var(--light-text);
+            font-weight: 500;
+        }
+
+        .report-section {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: rgba(227, 242, 253, 0.5);
+            border-radius: 16px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .report-section h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .report-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .report-label {
+            font-size: 0.95rem;
+            color: var(--light-text);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .report-value {
+            font-size: 1.1rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .rating-card {
+            background: linear-gradient(135deg, #4FC3F7, #0288D1);
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .rating-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(2, 136, 209, 0.3);
+        }
+
+        .rating-card .report-label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-card .stars {
+            font-size: 1.2rem;
+            color: #FFD700; /* Gold stars */
+        }
+
+        .visualization-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            box-shadow: 0 6px 18px rgba(2, 136, 209, 0.3);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #0277BD, #29B6F6);
+            transform: scale(1.05);
+            box-shadow: 0 10px 24px rgba(2, 136, 209, 0.4);
+        }
+
+        .back-btn {
+            background: none;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            margin-top: 1.5rem;
+            box-shadow: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(2, 136, 209, 0.1);
+            transform: scale(1.05);
+            box-shadow: 0 6px 18px rgba(2, 136, 209, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .report-container {
+                padding: 2rem;
+                max-width: 95%;
+            }
+            .report-title {
+                font-size: 2rem;
+            }
+            .report-section {
+                padding: 1rem;
+            }
+            .report-grid {
+                grid-template-columns: 1fr;
+            }
+            .image-wrapper {
+                max-width: 100%;
+            }
+            .rating-card {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="report-header">
+            <h2 class="report-title">Material Selection Report</h2>
+            <span class="report-timestamp" id="reportTimestamp"></span>
+        </div>
+        <div class="report-section" id="predictionSection">
+            <h3>Prediction Results</h3>
+            <div class="report-grid" id="predictionGrid"></div>
+        </div>
+        <div class="report-section">
+            <h3>Material Properties Visualization</h3>
+            <div class="visualization-container">
+                <div class="image-wrapper">
+                    <img src="https://i.pinimg.com/736x/1a/d5/48/1ad5487036c1dd433ff03d70e7eb11c6.jpg" alt="Strength Bar Plot">
+                </div>
+                <div class="image-wrapper">
+                    <img src="https://i.pinimg.com/736x/f8/93/8e/f8938e3b9b41595ece12b9f679eb10e7.jpg" alt="Elastic Modulus Histogram">
+                </div>
+            </div>
+        </div>
+        <button class="btn" id="downloadBtn">
+            <i class="fas fa-download"></i> Download Report as PDF
+        </button>
+        <button class="btn back-btn" onclick="window.location.href='dashboard.html'">
+            Back to Dashboard
+        </button>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+        const data = JSON.parse(localStorage.getItem('materialData')) || {};
+        const predictionGrid = document.getElementById('predictionGrid');
+        const reportTimestamp = document.getElementById('reportTimestamp');
+
+        // Default data if none exists in localStorage
+        const defaultData = {
+            industry: "Aerospace",
+            material: "Steel SAE 1015",
+            heatTreatment: "as-rolled",
+            su: 421, // Ultimate Strength (MPa)
+            sy: 314, // Yield Strength (MPa)
+            e: 207000, // Elastic Modulus (MPa)
+            g: 79000, // Shear Modulus (MPa)
+            mu: 0.3, // Poisson's Ratio
+            ro: 7860, // Density (kg/m³)
+            rating: 4 // Rating (out of 5)
+        };
+
+        const reportData = Object.keys(data).length ? data : defaultData;
+        const timestamp = new Date().toLocaleString();
+        reportTimestamp.textContent = `Generated: ${timestamp}`;
+
+        // Function to generate star rating HTML
+        const generateStars = (rating) => {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fas fa-star"></i>';
+                } else {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            }
+            return stars;
+        };
+
+        // Populate prediction grid
+        const details = [
+            { label: 'Industry', value: reportData.industry },
+            { label: 'Material', value: reportData.material },
+            { label: 'Heat Treatment', value: reportData.heatTreatment },
+            { label: 'Ultimate Strength (Su)', value: `${reportData.su} MPa` },
+            { label: 'Yield Strength (Sy)', value: `${reportData.sy} MPa` },
+            { label: 'Elastic Modulus (E)', value: `${reportData.e} MPa` },
+            { label: 'Shear Modulus (G)', value: `${reportData.g} MPa` },
+            { label: 'Poisson\'s Ratio (μ)', value: reportData.mu },
+            { label: 'Density (Ro)', value: `${reportData.ro} kg/m³` },
+            { label: 'Rating', value: generateStars(reportData.rating), isRating: true }
+        ];
+
+        predictionGrid.innerHTML = details.map(item => {
+            if (item.isRating) {
+                return `
+                    <div class="report-item rating-card">
+                        <span class="report-label">${item.label}</span>
+                        <span class="stars">${item.value}</span>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="report-item">
+                        <span class="report-label">${item.label}</span>
+                        <span class="report-value">${item.value}</span>
+                    </div>
+                `;
+            }
+        }).join('');
+
+        // Download PDF functionality
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const doc = new jsPDF();
+            const margin = 10;
+            let y = margin;
+
+            // Title
+            doc.setFontSize(18);
+            doc.setTextColor(2, 136, 209);
+            doc.text("Material Selection Report", margin, y);
+            y += 10;
+            doc.setLineWidth(0.5);
+            doc.line(margin, y, 200 - margin, y);
+            y += 10;
+
+            // Timestamp
+            doc.setFontSize(10);
+            doc.setTextColor(33, 33, 33);
+            doc.text(`Generated: ${timestamp}`, margin, y);
+            y += 10;
+
+            // Prediction Results
+            doc.setFontSize(14);
+            doc.setTextColor(79, 195, 247);
+            doc.text("Prediction Results", margin, y);
+            y += 7;
+            doc.setFontSize(12);
+            doc.setTextColor(13, 71, 161);
+            details.forEach(item => {
+                const value = item.isRating ? `${reportData.rating}/5` : item.value;
+                doc.text(`${item.label}: ${value}`, margin, y);
+                y += 7;
+            });
+
+            // Visualizations (Load images from Pinterest URLs)
+            const img1Url = "https://i.pinimg.com/736x/1a/d5/48/1ad5487036c1dd433ff03d70e7eb11c6.jpg";
+            const img2Url = "https://i.pinimg.com/736x/f8/93/8e/f8938e3b9b41595ece12b9f679eb10e7.jpg";
+
+            // Function to load image as base64
+            const loadImage = (url) => {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = "Anonymous"; // Handle CORS
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        resolve(canvas.toDataURL('image/png'));
+                    };
+                    img.onerror = reject;
+                    img.src = url;
+                });
+            };
+
+            try {
+                const img1Data = await loadImage(img1Url);
+                doc.addImage(img1Data, 'PNG', margin, y, 90, 60);
+                y += 70;
+
+                const img2Data = await loadImage(img2Url);
+                doc.addImage(img2Data, 'PNG', margin, y, 90, 60);
+            } catch (error) {
+                console.error('Error loading images:', error);
+                doc.text("Error: Could not load visualizations", margin, y);
+            }
+
+            // Save the PDF
+            doc.save('Material_Selection_Report1.pdf');
+        });
+    </script>
+</body>
+</html>

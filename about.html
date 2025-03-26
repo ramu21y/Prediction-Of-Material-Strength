@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Prediction of Material Selection</title>
+    <link rel="stylesheet" href="rambabu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo"> Prediction of Material Selection </div>
+                <ul class="nav-links">
+                    <li><a href="rambabu.html">Home</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="author.html">Author</a></li>
+                </ul>
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="carousel-section">
+            <div class="container">
+                <h2>Our Vision</h2>
+                <div class="carousel-container">
+                    <div class="carousel">
+                        <div class="carousel-item">
+                            <img src="https://d12oja0ew7x0i8.cloudfront.net/images/Article_Images/ImageForArticle_20195_16152824451523173.jpg" alt="Precision Tools">
+                            <div class="carousel-caption">
+                                <h3>Precision Tools</h3>
+                                <p>Accurate predictions for better outcomes.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://blog.goldsupplier.com/wp-content/uploads/2024/08/can-you-break-titanium-6.png" alt="Industry Focus">
+                            <div class="carousel-caption">
+                                <h3>Industry Focus</h3>
+                                <p>Supporting multiple industries.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://www.solitaire-overseas.com/blog/wp-content/uploads/2021/10/Stainless-Steel-Pipe-And-Tube.jpg" alt="Innovation">
+                            <div class="carousel-caption">
+                                <h3>Innovation</h3>
+                                <p>Driven by cutting-edge technology.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-button left"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-button right"><i class="fas fa-chevron-right"></i></button>
+                    <div class="carousel-dots">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="description-section">
+            <div class="container">
+                <h3>About Prediction of Material Selection</h3>
+                <p>Prediction of Material Selection is a powerful tool designed to help professionals predict the strength of various materials for their projects. Whether you're in aerospace, automotive, construction, or biomedical industries, our tool provides accurate predictions and recommendations to ensure your projects succeed. Built with advanced algorithms and a user-friendly interface, we aim to simplify material selection and enhance project outcomes.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Prediction of Material Selection</p>
+        </div>
+    </footer>
+
+    <script src="rambabu.js"></script>
+    <script>
+        // Basic carousel functionality
+        const carousel = document.querySelector('.carousel');
+        const items = document.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.dot');
+        const leftBtn = document.querySelector('.carousel-button.left');
+        const rightBtn = document.querySelector('.carousel-button.right');
+        let index = 0;
+
+        function updateCarousel() {
+            carousel.style.transform = `translateX(-${index * 100}%)`;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        }
+
+        leftBtn.addEventListener('click', () => {
+            index = (index > 0) ? index - 1 : items.length - 1;
+            updateCarousel();
+        });
+
+        rightBtn.addEventListener('click', () => {
+            index = (index < items.length - 1) ? index + 1 : 0;
+            updateCarousel();
+        });
+
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                index = i;
+                updateCarousel();
+            });
+        });
+    </script>
+</body>
+</html>
